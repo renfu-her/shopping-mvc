@@ -1,4 +1,4 @@
 from app import db
-from .shoppingcart import User, Product, Cart, CartItem, Order, OrderItem
+from .shoppingcart import User, Category, Product, ProductImage, Cart, CartItem, Order, OrderItem
 
-__all__ = ['User', 'Product', 'Cart', 'CartItem', 'Order', 'OrderItem']
+__all__ = ['User', 'Category', 'Product', 'ProductImage', 'Cart', 'CartItem', 'Order', 'OrderItem']

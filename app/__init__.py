@@ -31,9 +31,11 @@ def create_app():
     from app.controllers.home import home_bp
     from app.controllers.cart import cart_bp
     from app.controllers.auth import auth_bp
+    from app.controllers.admin import backend_bp
     
     app.register_blueprint(home_bp)
     app.register_blueprint(cart_bp, url_prefix='/cart')
     app.register_blueprint(auth_bp, url_prefix='/auth')
+    app.register_blueprint(backend_bp, url_prefix='/backend')
     
     return app

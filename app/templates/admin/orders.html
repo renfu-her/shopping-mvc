@@ -1,0 +1,175 @@
+{% extends "layout/app.html" %}
+
+{% block title %}Order Management - Backend{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h2><i class="fas fa-shopping-bag me-2"></i>Order Management</h2>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Filters -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-body">
+                    <form method="GET" class="row g-3">
+                        <div class="col-md-4">
+                            <label for="search" class="form-label">Search Orders</label>
+                            <input type="text" class="form-control" id="search" name="search" 
+                                   value="{{ current_search }}" placeholder="Search by order number, name, or email...">
+                        </div>
+                        <div class="col-md-3">
+                            <label for="status" class="form-label">Status</label>
+                            <select class="form-select" id="status" name="status">
+                                <option value="">All Statuses</option>
+                                <option value="pending" {% if current_status == 'pending' %}selected{% endif %}>Pending</option>
+                                <option value="confirmed" {% if current_status == 'confirmed' %}selected{% endif %}>Confirmed</option>
+                                <option value="shipped" {% if current_status == 'shipped' %}selected{% endif %}>Shipped</option>
+                                <option value="delivered" {% if current_status == 'delivered' %}selected{% endif %}>Delivered</option>
+                                <option value="cancelled" {% if current_status == 'cancelled' %}selected{% endif %}>Cancelled</option>
+                            </select>
+                        </div>
+                        <div class="col-md-3 d-flex align-items-end">
+                            <button type="submit" class="btn btn-outline-primary me-2">
+                                <i class="fas fa-search me-1"></i>Search
+                            </button>
+                            <a href="{{ url_for('backend.orders') }}" class="btn btn-outline-secondary">
+                                <i class="fas fa-times me-1"></i>Clear
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Orders Table -->
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">Orders ({{ orders.total }} total)</h5>
+                </div>
+                <div class="card-body">
+                    {% if orders.items %}
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>Order #</th>
+                                        <th>Customer</th>
+                                        <th>Email</th>
+                                        <th>Total</th>
+                                        <th>Status</th>
+                                        <th>Date</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for order in orders.items %}
+                                        <tr>
+                                            <td>
+                                                <strong>{{ order.order_number }}</strong>
+                                            </td>
+                                            <td>
+                                                {{ order.customer_name }}
+                                                {% if order.user %}
+                                                    <br>
+                                                    <small class="text-muted">User: {{ order.user.username }}</small>
+                                                {% endif %}
+                                            </td>
+                                            <td>
+                                                {{ order.customer_email }}
+                                            </td>
+                                            <td>
+                                                <strong class="text-primary">${{ "%.2f"|format(order.total_amount) }}</strong>
+                                            </td>
+                                            <td>
+                                                <span class="badge 
+                                                    {% if order.status == 'pending' %}bg-warning
+                                                    {% elif order.status == 'confirmed' %}bg-info
+                                                    {% elif order.status == 'shipped' %}bg-primary
+                                                    {% elif order.status == 'delivered' %}bg-success
+                                                    {% elif order.status == 'cancelled' %}bg-danger
+                                                    {% else %}bg-secondary{% endif %}">
+                                                    {{ order.status.title() }}
+                                                </span>
+                                            </td>
+                                            <td>
+                                                <small class="text-muted">{{ order.created_at.strftime('%m/%d/%Y %H:%M') }}</small>
+                                            </td>
+                                            <td>
+                                                <a href="{{ url_for('backend.order_detail', order_id=order.id) }}" 
+                                                   class="btn btn-sm btn-outline-primary">
+                                                    <i class="fas fa-eye"></i> View
+                                                </a>
+                                            </td>
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                        
+                        <!-- Pagination -->
+                        {% if orders.pages > 1 %}
+                            <nav aria-label="Orders pagination">
+                                <ul class="pagination justify-content-center">
+                                    {% if orders.has_prev %}
+                                        <li class="page-item">
+                                            <a class="page-link" href="{{ url_for('backend.orders', page=orders.prev_num, search=current_search, status=current_status) }}">Previous</a>
+                                        </li>
+                                    {% endif %}
+                                    
+                                    {% for page_num in orders.iter_pages() %}
+                                        {% if page_num %}
+                                            {% if page_num != orders.page %}
+                                                <li class="page-item">
+                                                    <a class="page-link" href="{{ url_for('backend.orders', page=page_num, search=current_search, status=current_status) }}">{{ page_num }}</a>
+                                                </li>
+                                            {% else %}
+                                                <li class="page-item active">
+                                                    <span class="page-link">{{ page_num }}</span>
+                                                </li>
+                                            {% endif %}
+                                        {% else %}
+                                            <li class="page-item disabled">
+                                                <span class="page-link">...</span>
+                                            </li>
+                                        {% endif %}
+                                    {% endfor %}
+                                    
+                                    {% if orders.has_next %}
+                                        <li class="page-item">
+                                            <a class="page-link" href="{{ url_for('backend.orders', page=orders.next_num, search=current_search, status=current_status) }}">Next</a>
+                                        </li>
+                                    {% endif %}
+                                </ul>
+                            </nav>
+                        {% endif %}
+                    {% else %}
+                        <div class="text-center py-5">
+                            <i class="fas fa-shopping-bag fa-3x text-muted mb-3"></i>
+                            <h4>No orders found</h4>
+                            <p class="text-muted">No orders match your search criteria.</p>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+$(document).ready(function() {
+    // Load cart summary on page load
+    loadCartSummary();
+});
+</script>
+{% endblock %}

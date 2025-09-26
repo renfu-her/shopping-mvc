@@ -10,7 +10,7 @@
                 <div class="card-body p-5">
                     <div class="text-center mb-4">
                         <h2 class="fw-bold text-primary">
-                            <i class="fas fa-sign-in-alt me-2"></i>Welcome Back
+                            <i class="fas fa-store me-2"></i>Customer Login
                         </h2>
                         <p class="text-muted">Sign in to your account to continue shopping</p>
                     </div>
@@ -56,10 +56,18 @@
                     <hr class="my-4">
                     
                     <div class="text-center">
-                        <p class="mb-0">Don't have an account? 
+                        <p class="mb-2">Don't have an account? 
                             <a href="{{ url_for('auth.register') }}" class="text-primary fw-bold">
                                 Create one here
                             </a>
+                        </p>
+                        <hr class="my-3">
+                        <p class="mb-0">
+                            <small class="text-muted">Need backend access? 
+                                <a href="{{ url_for('backend.backend_login') }}" class="text-secondary">
+                                    <i class="fas fa-cogs me-1"></i>Backend Login
+                                </a>
+                            </small>
                         </p>
                     </div>
                 </div>

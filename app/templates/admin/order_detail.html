@@ -1,6 +1,6 @@
 {% extends "layout/app.html" %}
 
-{% block title %}Order Details - Shopping Cart{% endblock %}
+{% block title %}Order Details - Backend{% endblock %}
 
 {% block content %}
 <div class="container">
@@ -8,7 +8,7 @@
         <div class="col-12">
             <div class="d-flex justify-content-between align-items-center mb-4">
                 <h2><i class="fas fa-receipt me-2"></i>Order Details</h2>
-                <a href="{{ url_for('auth.user_orders') }}" class="btn btn-outline-secondary">
+                <a href="{{ url_for('backend.orders') }}" class="btn btn-outline-secondary">
                     <i class="fas fa-arrow-left me-2"></i>Back to Orders
                 </a>
             </div>
@@ -121,6 +121,30 @@
                 </div>
             </div>
             
+            <!-- Status Update -->
+            <div class="card shadow-sm mt-3">
+                <div class="card-header">
+                    <h5 class="mb-0"><i class="fas fa-edit me-2"></i>Update Status</h5>
+                </div>
+                <div class="card-body">
+                    <form method="POST" action="{{ url_for('backend.update_order_status', order_id=order.id) }}">
+                        <div class="mb-3">
+                            <label for="status" class="form-label">Order Status</label>
+                            <select class="form-select" id="status" name="status">
+                                <option value="pending" {% if order.status == 'pending' %}selected{% endif %}>Pending</option>
+                                <option value="confirmed" {% if order.status == 'confirmed' %}selected{% endif %}>Confirmed</option>
+                                <option value="shipped" {% if order.status == 'shipped' %}selected{% endif %}>Shipped</option>
+                                <option value="delivered" {% if order.status == 'delivered' %}selected{% endif %}>Delivered</option>
+                                <option value="cancelled" {% if order.status == 'cancelled' %}selected{% endif %}>Cancelled</option>
+                            </select>
+                        </div>
+                        <button type="submit" class="btn btn-primary w-100">
+                            <i class="fas fa-save me-2"></i>Update Status
+                        </button>
+                    </form>
+                </div>
+            </div>
+            
             <!-- Shipping Information -->
             <div class="card shadow-sm mt-3">
                 <div class="card-header">
@@ -150,97 +174,9 @@
                     </div>
                 </div>
             </div>
-            
-            <!-- Order Timeline -->
-            <div class="card shadow-sm mt-3">
-                <div class="card-header">
-                    <h5 class="mb-0"><i class="fas fa-clock me-2"></i>Order Timeline</h5>
-                </div>
-                <div class="card-body">
-                    <div class="timeline">
-                        <div class="timeline-item">
-                            <div class="timeline-marker bg-primary"></div>
-                            <div class="timeline-content">
-                                <h6 class="mb-1">Order Placed</h6>
-                                <small class="text-muted">{{ order.created_at.strftime('%B %d, %Y at %I:%M %p') }}</small>
-                            </div>
-                        </div>
-                        
-                        {% if order.status in ['confirmed', 'shipped', 'delivered'] %}
-                        <div class="timeline-item">
-                            <div class="timeline-marker bg-info"></div>
-                            <div class="timeline-content">
-                                <h6 class="mb-1">Order Confirmed</h6>
-                                <small class="text-muted">Processing your order</small>
-                            </div>
-                        </div>
-                        {% endif %}
-                        
-                        {% if order.status in ['shipped', 'delivered'] %}
-                        <div class="timeline-item">
-                            <div class="timeline-marker bg-warning"></div>
-                            <div class="timeline-content">
-                                <h6 class="mb-1">Order Shipped</h6>
-                                <small class="text-muted">Your order is on the way</small>
-                            </div>
-                        </div>
-                        {% endif %}
-                        
-                        {% if order.status == 'delivered' %}
-                        <div class="timeline-item">
-                            <div class="timeline-marker bg-success"></div>
-                            <div class="timeline-content">
-                                <h6 class="mb-1">Order Delivered</h6>
-                                <small class="text-muted">Your order has been delivered</small>
-                            </div>
-                        </div>
-                        {% endif %}
-                    </div>
-                </div>
-            </div>
         </div>
     </div>
 </div>
-{% endblock %}
-
-{% block extra_css %}
-<style>
-.timeline {
-    position: relative;
-    padding-left: 30px;
-}
-
-.timeline-item {
-    position: relative;
-    margin-bottom: 20px;
-}
-
-.timeline-marker {
-    position: absolute;
-    left: -35px;
-    top: 5px;
-    width: 10px;
-    height: 10px;
-    border-radius: 50%;
-    border: 2px solid #fff;
-    box-shadow: 0 0 0 2px #dee2e6;
-}
-
-.timeline-item:not(:last-child)::before {
-    content: '';
-    position: absolute;
-    left: -31px;
-    top: 15px;
-    width: 2px;
-    height: 30px;
-    background-color: #dee2e6;
-}
-
-.timeline-content h6 {
-    margin-bottom: 5px;
-    font-size: 0.9rem;
-}
-</style>
 {% endblock %}
 
 {% block extra_js %}

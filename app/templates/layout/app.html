@@ -53,17 +53,36 @@
                                 <li><a class="dropdown-item" href="{{ url_for('auth.user_orders') }}">
                                     <i class="fas fa-shopping-bag me-2"></i>My Orders
                                 </a></li>
+                                {% if current_user.is_admin %}
                                 <li><hr class="dropdown-divider"></li>
+                                <li><a class="dropdown-item" href="{{ url_for('backend.dashboard') }}">
+                                    <i class="fas fa-cog me-2"></i>Backend Panel
+                                </a></li>
+                                {% endif %}
+                                <li><hr class="dropdown-divider"></li>
+                                {% if current_user.is_admin %}
+                                <li><a class="dropdown-item" href="{{ url_for('backend.backend_logout') }}">
+                                    <i class="fas fa-cogs me-2"></i>Backend Logout
+                                </a></li>
+                                {% endif %}
                                 <li><a class="dropdown-item" href="{{ url_for('auth.logout') }}">
-                                    <i class="fas fa-sign-out-alt me-2"></i>Logout
+                                    <i class="fas fa-sign-out-alt me-2"></i>Customer Logout
                                 </a></li>
                             </ul>
                         </li>
                     {% else %}
-                        <li class="nav-item">
-                            <a class="nav-link" href="{{ url_for('auth.login') }}">
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="loginDropdown" role="button" data-bs-toggle="dropdown">
                                 <i class="fas fa-sign-in-alt me-1"></i>Login
                             </a>
+                            <ul class="dropdown-menu">
+                                <li><a class="dropdown-item" href="{{ url_for('auth.login') }}">
+                                    <i class="fas fa-store me-2"></i>Customer Login
+                                </a></li>
+                                <li><a class="dropdown-item" href="{{ url_for('backend.backend_login') }}">
+                                    <i class="fas fa-cogs me-2"></i>Backend Access
+                                </a></li>
+                            </ul>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" href="{{ url_for('auth.register') }}">

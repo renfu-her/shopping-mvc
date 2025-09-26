@@ -5,7 +5,26 @@
 {% block content %}
 <div class="row">
     <div class="col-md-6">
-        {% if product.image_url %}
+        {% if product.images %}
+            <div id="productImageCarousel" class="carousel slide" data-bs-ride="carousel">
+                <div class="carousel-inner">
+                    {% for image in product.images %}
+                        <div class="carousel-item {% if image.is_primary or loop.first %}active{% endif %}">
+                            <img src="{{ image.file_path }}" class="d-block w-100 rounded shadow" 
+                                 style="height: 400px; object-fit: cover;" alt="{{ product.name }}">
+                        </div>
+                    {% endfor %}
+                </div>
+                {% if product.images|length > 1 %}
+                    <button class="carousel-control-prev" type="button" data-bs-target="#productImageCarousel" data-bs-slide="prev">
+                        <span class="carousel-control-prev-icon"></span>
+                    </button>
+                    <button class="carousel-control-next" type="button" data-bs-target="#productImageCarousel" data-bs-slide="next">
+                        <span class="carousel-control-next-icon"></span>
+                    </button>
+                {% endif %}
+            </div>
+        {% elif product.image_url %}
             <img src="{{ product.image_url }}" class="img-fluid rounded" alt="{{ product.name }}">
         {% else %}
             <div class="bg-light d-flex align-items-center justify-content-center rounded" style="height: 400px;">
@@ -18,7 +37,7 @@
         <h1>{{ product.name }}</h1>
         
         {% if product.category %}
-            <span class="badge bg-secondary mb-3">{{ product.category }}</span>
+            <span class="badge bg-secondary mb-3">{{ product.category.name }}</span>
         {% endif %}
         
         <div class="mb-3">

@@ -15,6 +15,7 @@ class User(UserMixin, db.Model):
     phone = db.Column(db.String(20))
     address = db.Column(db.Text)
     is_active = db.Column(db.Boolean, default=True)
+    is_admin = db.Column(db.Boolean, default=False)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
     
@@ -46,6 +47,28 @@ class User(UserMixin, db.Model):
             'created_at': self.created_at.isoformat()
         }
 
+class Category(db.Model):
+    __tablename__ = 'categories'
+    
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(50), unique=True, nullable=False)
+    description = db.Column(db.Text)
+    is_active = db.Column(db.Boolean, default=True)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+    
+    # Relationship with products
+    products = db.relationship('Product', backref='category', lazy=True)
+    
+    def to_dict(self):
+        return {
+            'id': self.id,
+            'name': self.name,
+            'description': self.description,
+            'is_active': self.is_active,
+            'product_count': len(self.products)
+        }
+
 class Product(db.Model):
     __tablename__ = 'products'
     
@@ -55,7 +78,8 @@ class Product(db.Model):
     price = db.Column(db.Numeric(10, 2), nullable=False)
     stock_quantity = db.Column(db.Integer, default=0)
     image_url = db.Column(db.String(255))
-    category = db.Column(db.String(50))
+    category_id = db.Column(db.Integer, db.ForeignKey('categories.id'), nullable=True)
+    is_active = db.Column(db.Boolean, default=True)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
     
@@ -71,7 +95,38 @@ class Product(db.Model):
             'price': float(self.price),
             'stock_quantity': self.stock_quantity,
             'image_url': self.image_url,
-            'category': self.category
+            'category_id': self.category_id,
+            'category_name': self.category.name if self.category else None,
+            'is_active': self.is_active
+        }
+
+class ProductImage(db.Model):
+    __tablename__ = 'product_images'
+    
+    id = db.Column(db.Integer, primary_key=True)
+    product_id = db.Column(db.Integer, db.ForeignKey('products.id'), nullable=False)
+    filename = db.Column(db.String(255), nullable=False)
+    original_filename = db.Column(db.String(255), nullable=False)
+    file_path = db.Column(db.String(500), nullable=False)
+    file_size = db.Column(db.Integer)
+    mime_type = db.Column(db.String(100))
+    is_primary = db.Column(db.Boolean, default=False)
+    sort_order = db.Column(db.Integer, default=0)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    
+    # Relationship with product
+    product = db.relationship('Product', backref='images', lazy=True)
+    
+    def to_dict(self):
+        return {
+            'id': self.id,
+            'filename': self.filename,
+            'original_filename': self.original_filename,
+            'file_path': self.file_path,
+            'file_size': self.file_size,
+            'mime_type': self.mime_type,
+            'is_primary': self.is_primary,
+            'sort_order': self.sort_order
         }
 
 class Cart(db.Model):

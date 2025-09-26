@@ -23,9 +23,9 @@
                         <select class="form-select" id="category" name="category">
                             <option value="">All Categories</option>
                             {% for category in categories %}
-                                <option value="{{ category }}" 
-                                        {% if current_category == category %}selected{% endif %}>
-                                    {{ category }}
+                                <option value="{{ category.id }}" 
+                                        {% if current_category == category.id|string %}selected{% endif %}>
+                                    {{ category.name }}
                                 </option>
                             {% endfor %}
                         </select>
@@ -44,7 +44,14 @@
             {% for product in products.items %}
                 <div class="col-md-4 mb-4">
                     <div class="card h-100 product-card">
-                        {% if product.image_url %}
+                        {% if product.images %}
+                            {% set primary_image = product.images|selectattr('is_primary')|first %}
+                            {% if primary_image %}
+                                <img src="{{ primary_image.file_path }}" class="card-img-top" alt="{{ product.name }}" style="height: 200px; object-fit: cover;">
+                            {% else %}
+                                <img src="{{ product.images[0].file_path }}" class="card-img-top" alt="{{ product.name }}" style="height: 200px; object-fit: cover;">
+                            {% endif %}
+                        {% elif product.image_url %}
                             <img src="{{ product.image_url }}" class="card-img-top" alt="{{ product.name }}" style="height: 200px; object-fit: cover;">
                         {% else %}
                             <div class="card-img-top bg-light d-flex align-items-center justify-content-center" style="height: 200px;">

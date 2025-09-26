@@ -71,7 +71,7 @@
                         
                         <div class="col-md-4">
                             <h6 class="mb-1">{{ item.product.name }}</h6>
-                            <small class="text-muted">{{ item.product.category }}</small>
+                            <small class="text-muted">{{ item.product.category.name if item.product.category else 'No category' }}</small>
                         </div>
                         
                         <div class="col-md-2">

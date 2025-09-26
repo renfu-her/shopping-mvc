@@ -15,7 +15,7 @@ def index():
     query = Product.query
     
     if category:
-        query = query.filter(Product.category == category)
+        query = query.filter(Product.category_id == category)
     
     if search:
         query = query.filter(Product.name.contains(search))
@@ -25,8 +25,8 @@ def index():
     )
     
     # Get unique categories for filter
-    categories = db.session.query(Product.category).distinct().all()
-    categories = [cat[0] for cat in categories if cat[0]]
+    from app.models import Category
+    categories = Category.query.filter_by(is_active=True).all()
     
     return render_template('products/index.html', 
                          products=products, 
