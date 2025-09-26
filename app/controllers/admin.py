@@ -7,6 +7,7 @@ from functools import wraps
 import os
 import uuid
 from werkzeug.utils import secure_filename
+from PIL import Image
 
 backend_bp = Blueprint('backend', __name__)
 
@@ -20,32 +21,50 @@ def allowed_file(filename):
            filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 def save_uploaded_file(file, product_id):
-    """Save uploaded file and return file info"""
+    """Save uploaded file and convert to WebP format"""
     if file and allowed_file(file.filename):
-        # Generate unique filename
+        # Generate unique filename with .webp extension
         filename = secure_filename(file.filename)
         name, ext = os.path.splitext(filename)
-        unique_filename = f"{uuid.uuid4()}{ext}"
+        unique_filename = f"{uuid.uuid4()}.webp"
         
         # Create upload directory if it doesn't exist
         upload_dir = os.path.join(current_app.static_folder, 'uploads', 'products', str(product_id))
         os.makedirs(upload_dir, exist_ok=True)
         
-        # Save file
+        # Save file path
         file_path = os.path.join(upload_dir, unique_filename)
-        file.save(file_path)
         
-        # Get file info
-        file_size = os.path.getsize(file_path)
-        mime_type = file.content_type
-        
-        return {
-            'filename': unique_filename,
-            'original_filename': filename,
-            'file_path': f'/static/uploads/products/{product_id}/{unique_filename}',
-            'file_size': file_size,
-            'mime_type': mime_type
-        }
+        try:
+            # Open and convert image to WebP
+            with Image.open(file) as img:
+                # Convert to RGB if necessary (for PNG with transparency)
+                if img.mode in ('RGBA', 'LA', 'P'):
+                    # Create a white background
+                    background = Image.new('RGB', img.size, (255, 255, 255))
+                    if img.mode == 'P':
+                        img = img.convert('RGBA')
+                    background.paste(img, mask=img.split()[-1] if img.mode == 'RGBA' else None)
+                    img = background
+                elif img.mode != 'RGB':
+                    img = img.convert('RGB')
+                
+                # Save as WebP with optimization
+                img.save(file_path, 'WebP', quality=85, optimize=True)
+            
+            # Get file info
+            file_size = os.path.getsize(file_path)
+            
+            return {
+                'filename': unique_filename,
+                'original_filename': filename,
+                'file_path': f'/static/uploads/products/{product_id}/{unique_filename}',
+                'file_size': file_size,
+                'mime_type': 'image/webp'
+            }
+        except Exception as e:
+            print(f"Error converting image to WebP: {e}")
+            return None
     return None
 
 def backend_required(f):
