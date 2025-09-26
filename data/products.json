@@ -1,0 +1,110 @@
+[
+  {
+    "id": 1,
+    "name": "Wireless Bluetooth Headphones",
+    "description": "High-quality wireless headphones with noise cancellation and 30-hour battery life. Perfect for music lovers and professionals.",
+    "price": 199.99,
+    "stock_quantity": 50,
+    "image_url": "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=400",
+    "category": "Electronics"
+  },
+  {
+    "id": 2,
+    "name": "Smart Fitness Watch",
+    "description": "Advanced fitness tracking watch with heart rate monitor, GPS, and water resistance. Track your workouts and health metrics.",
+    "price": 299.99,
+    "stock_quantity": 30,
+    "image_url": "https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=400",
+    "category": "Electronics"
+  },
+  {
+    "id": 3,
+    "name": "Organic Cotton T-Shirt",
+    "description": "Comfortable and sustainable organic cotton t-shirt. Available in multiple colors and sizes. Perfect for everyday wear.",
+    "price": 29.99,
+    "stock_quantity": 100,
+    "image_url": "https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=400",
+    "category": "Clothing"
+  },
+  {
+    "id": 4,
+    "name": "Stainless Steel Water Bottle",
+    "description": "Insulated stainless steel water bottle that keeps drinks cold for 24 hours or hot for 12 hours. BPA-free and eco-friendly.",
+    "price": 24.99,
+    "stock_quantity": 75,
+    "image_url": "https://images.unsplash.com/photo-1602143407151-7111542de6e8?w=400",
+    "category": "Home & Kitchen"
+  },
+  {
+    "id": 5,
+    "name": "Wireless Phone Charger",
+    "description": "Fast wireless charging pad compatible with all Qi-enabled devices. Sleek design with LED indicator and safety features.",
+    "price": 39.99,
+    "stock_quantity": 60,
+    "image_url": "https://images.unsplash.com/photo-1583394838336-acd977736f90?w=400",
+    "category": "Electronics"
+  },
+  {
+    "id": 6,
+    "name": "Leather Crossbody Bag",
+    "description": "Genuine leather crossbody bag with multiple compartments. Perfect for daily use, travel, or special occasions.",
+    "price": 89.99,
+    "stock_quantity": 25,
+    "image_url": "https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=400",
+    "category": "Accessories"
+  },
+  {
+    "id": 7,
+    "name": "Bluetooth Speaker",
+    "description": "Portable Bluetooth speaker with 360-degree sound and 12-hour battery life. Waterproof and shockproof design.",
+    "price": 79.99,
+    "stock_quantity": 40,
+    "image_url": "https://images.unsplash.com/photo-1608043152269-423dbba4e7e1?w=400",
+    "category": "Electronics"
+  },
+  {
+    "id": 8,
+    "name": "Yoga Mat",
+    "description": "Premium non-slip yoga mat made from eco-friendly materials. Extra thick for comfort and durability.",
+    "price": 49.99,
+    "stock_quantity": 35,
+    "image_url": "https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?w=400",
+    "category": "Sports & Fitness"
+  },
+  {
+    "id": 9,
+    "name": "Ceramic Coffee Mug Set",
+    "description": "Set of 4 handcrafted ceramic coffee mugs. Microwave and dishwasher safe. Perfect for home or office.",
+    "price": 34.99,
+    "stock_quantity": 80,
+    "image_url": "https://images.unsplash.com/photo-1514228742587-6b1558fcf93a?w=400",
+    "category": "Home & Kitchen"
+  },
+  {
+    "id": 10,
+    "name": "LED Desk Lamp",
+    "description": "Adjustable LED desk lamp with touch control and USB charging port. Multiple brightness levels and color temperatures.",
+    "price": 59.99,
+    "stock_quantity": 45,
+    "image_url": "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400",
+    "category": "Home & Kitchen"
+  },
+  {
+    "id": 11,
+    "name": "Running Shoes",
+    "description": "Lightweight running shoes with breathable mesh upper and cushioned sole. Perfect for daily runs and workouts.",
+    "price": 129.99,
+    "stock_quantity": 55,
+    "image_url": "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=400",
+    "category": "Sports & Fitness"
+  },
+  {
+    "id": 12,
+    "name": "Wireless Mouse",
+    "description": "Ergonomic wireless mouse with precision tracking and long battery life. Compatible with all major operating systems.",
+    "price": 34.99,
+    "stock_quantity": 70,
+    "image_url": "https://images.unsplash.com/photo-1527864550417-7fd91fc51a46?w=400",
+    "category": "Electronics"
+  }
+]

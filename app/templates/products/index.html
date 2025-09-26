@@ -1,0 +1,196 @@
+{% extends "layout/app.html" %}
+
+{% block title %}Products - Shopping Cart{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-3">
+        <!-- Filters -->
+        <div class="card">
+            <div class="card-header">
+                <h5>Filters</h5>
+            </div>
+            <div class="card-body">
+                <form method="GET">
+                    <div class="mb-3">
+                        <label for="search" class="form-label">Search</label>
+                        <input type="text" class="form-control" id="search" name="search" 
+                               value="{{ current_search }}" placeholder="Search products...">
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="category" class="form-label">Category</label>
+                        <select class="form-select" id="category" name="category">
+                            <option value="">All Categories</option>
+                            {% for category in categories %}
+                                <option value="{{ category }}" 
+                                        {% if current_category == category %}selected{% endif %}>
+                                    {{ category }}
+                                </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    
+                    <button type="submit" class="btn btn-primary">Apply Filters</button>
+                    <a href="{{ url_for('home.index') }}" class="btn btn-secondary">Clear</a>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-9">
+        <!-- Products Grid -->
+        <div class="row">
+            {% for product in products.items %}
+                <div class="col-md-4 mb-4">
+                    <div class="card h-100 product-card">
+                        {% if product.image_url %}
+                            <img src="{{ product.image_url }}" class="card-img-top" alt="{{ product.name }}" style="height: 200px; object-fit: cover;">
+                        {% else %}
+                            <div class="card-img-top bg-light d-flex align-items-center justify-content-center" style="height: 200px;">
+                                <i class="fas fa-image fa-3x text-muted"></i>
+                            </div>
+                        {% endif %}
+                        
+                        <div class="card-body d-flex flex-column">
+                            <h5 class="card-title">{{ product.name }}</h5>
+                            <p class="card-text text-muted">{{ product.description[:100] }}{% if product.description|length > 100 %}...{% endif %}</p>
+                            
+                            <div class="mt-auto">
+                                <div class="d-flex justify-content-between align-items-center mb-3">
+                                    <span class="h5 text-primary">${{ "%.2f"|format(product.price) }}</span>
+                                    <small class="text-muted">Stock: {{ product.stock_quantity }}</small>
+                                </div>
+                                
+                                <div class="d-grid gap-2">
+                                    <a href="{{ url_for('home.product_detail', product_id=product.id) }}" 
+                                       class="btn btn-outline-primary">View Details</a>
+                                    <button class="btn btn-primary add-to-cart-btn" 
+                                            data-product-id="{{ product.id }}"
+                                            {% if product.stock_quantity <= 0 %}disabled{% endif %}>
+                                        <i class="fas fa-cart-plus me-1"></i>
+                                        {% if product.stock_quantity <= 0 %}Out of Stock{% else %}Add to Cart{% endif %}
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% else %}
+                <div class="col-12">
+                    <div class="text-center py-5">
+                        <i class="fas fa-search fa-3x text-muted mb-3"></i>
+                        <h4>No products found</h4>
+                        <p class="text-muted">Try adjusting your search criteria.</p>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+        
+        <!-- Pagination -->
+        {% if products.pages > 1 %}
+            <nav aria-label="Products pagination">
+                <ul class="pagination justify-content-center">
+                    {% if products.has_prev %}
+                        <li class="page-item">
+                            <a class="page-link" href="{{ url_for('home.index', page=products.prev_num, category=current_category, search=current_search) }}">Previous</a>
+                        </li>
+                    {% endif %}
+                    
+                    {% for page_num in products.iter_pages() %}
+                        {% if page_num %}
+                            {% if page_num != products.page %}
+                                <li class="page-item">
+                                    <a class="page-link" href="{{ url_for('home.index', page=page_num, category=current_category, search=current_search) }}">{{ page_num }}</a>
+                                </li>
+                            {% else %}
+                                <li class="page-item active">
+                                    <span class="page-link">{{ page_num }}</span>
+                                </li>
+                            {% endif %}
+                        {% else %}
+                            <li class="page-item disabled">
+                                <span class="page-link">...</span>
+                            </li>
+                        {% endif %}
+                    {% endfor %}
+                    
+                    {% if products.has_next %}
+                        <li class="page-item">
+                            <a class="page-link" href="{{ url_for('home.index', page=products.next_num, category=current_category, search=current_search) }}">Next</a>
+                        </li>
+                    {% endif %}
+                </ul>
+            </nav>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+$(document).ready(function() {
+    // Add to cart functionality
+    $('.add-to-cart-btn').click(function() {
+        const productId = $(this).data('product-id');
+        const button = $(this);
+        
+        // Disable button during request
+        button.prop('disabled', true);
+        button.html('<i class="fas fa-spinner fa-spin me-1"></i>Adding...');
+        
+        $.ajax({
+            url: '{{ url_for("home.add_to_cart") }}',
+            method: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify({
+                product_id: productId,
+                quantity: 1
+            }),
+            success: function(response) {
+                if (response.success) {
+                    // Update cart badge
+                    $('#cart-badge').text(response.cart_summary.total_items);
+                    
+                    // Show success message
+                    showAlert('Product added to cart!', 'success');
+                    
+                    // Reset button
+                    button.html('<i class="fas fa-check me-1"></i>Added!');
+                    setTimeout(function() {
+                        button.html('<i class="fas fa-cart-plus me-1"></i>Add to Cart');
+                        button.prop('disabled', false);
+                    }, 2000);
+                }
+            },
+            error: function(xhr) {
+                const response = xhr.responseJSON;
+                showAlert(response.error || 'Error adding product to cart', 'danger');
+                
+                // Reset button
+                button.html('<i class="fas fa-cart-plus me-1"></i>Add to Cart');
+                button.prop('disabled', false);
+            }
+        });
+    });
+    
+    // Load cart summary on page load
+    loadCartSummary();
+});
+
+function showAlert(message, type) {
+    const alertHtml = `
+        <div class="alert alert-${type} alert-dismissible fade show" role="alert">
+            ${message}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    `;
+    $('.container').first().prepend(alertHtml);
+    
+    // Auto-dismiss after 3 seconds
+    setTimeout(function() {
+        $('.alert').alert('close');
+    }, 3000);
+}
+</script>
+{% endblock %}

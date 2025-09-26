@@ -1,0 +1,10 @@
+This directory is for storing product images and other static images.
+
+You can add product images here and reference them in the products.json file or database.
+
+Example structure:
+- product-1.jpg
+- product-2.jpg
+- product-3.jpg
+- logo.png
+- banner.jpg
