@@ -71,17 +71,10 @@
                         </div>
                         
                         <div class="mb-3">
-                            <label for="image_url" class="form-label">Image URL</label>
-                            <input type="url" class="form-control" id="image_url" name="image_url" 
-                                   placeholder="https://example.com/image.jpg">
-                            <div class="form-text">Enter a valid image URL (optional if uploading files)</div>
-                        </div>
-                        
-                        <div class="mb-3">
-                            <label for="images" class="form-label">Upload Images</label>
+                            <label for="images" class="form-label">Upload Images *</label>
                             <input type="file" class="form-control" id="images" name="images" 
-                                   multiple accept="image/*">
-                            <div class="form-text">Select multiple images (PNG, JPG, JPEG, GIF, WebP). Max 5MB per file.</div>
+                                   multiple accept="image/*" required>
+                            <div class="form-text">Select multiple images (PNG, JPG, JPEG, GIF, WebP). Max 5MB per file. At least one image is required.</div>
                         </div>
                         
                         <div class="d-flex justify-content-between">

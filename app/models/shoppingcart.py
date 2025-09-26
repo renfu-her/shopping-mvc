@@ -77,7 +77,6 @@ class Product(db.Model):
     description = db.Column(db.Text)
     price = db.Column(db.Numeric(10, 2), nullable=False)
     stock_quantity = db.Column(db.Integer, default=0)
-    image_url = db.Column(db.String(255))
     category_id = db.Column(db.Integer, db.ForeignKey('categories.id'), nullable=True)
     is_active = db.Column(db.Boolean, default=True)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
@@ -94,7 +93,6 @@ class Product(db.Model):
             'description': self.description,
             'price': float(self.price),
             'stock_quantity': self.stock_quantity,
-            'image_url': self.image_url,
             'category_id': self.category_id,
             'category_name': self.category.name if self.category else None,
             'is_active': self.is_active

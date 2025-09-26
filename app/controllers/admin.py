@@ -159,7 +159,6 @@ def add_product():
         description = request.form.get('description', '').strip()
         price = request.form.get('price', '')
         stock_quantity = request.form.get('stock_quantity', '')
-        image_url = request.form.get('image_url', '').strip()
         category_id = request.form.get('category_id', '')
         
         # Validation
@@ -198,6 +197,11 @@ def add_product():
         else:
             category_id = None
         
+        # Check if at least one image is uploaded
+        uploaded_files = request.files.getlist('images')
+        if not uploaded_files or not uploaded_files[0].filename:
+            errors.append('At least one image is required')
+        
         if errors:
             for error in errors:
                 flash(error, 'error')
@@ -211,7 +215,6 @@ def add_product():
                 description=description,
                 price=price,
                 stock_quantity=stock_quantity,
-                image_url=image_url,
                 category_id=category_id
             )
             
@@ -219,7 +222,6 @@ def add_product():
             db.session.flush()  # Get the product ID
             
             # Handle image uploads
-            uploaded_files = request.files.getlist('images')
             if uploaded_files and uploaded_files[0].filename:
                 for i, file in enumerate(uploaded_files):
                     if file.filename:  # Check if file was actually selected
@@ -263,7 +265,6 @@ def edit_product(product_id):
         description = request.form.get('description', '').strip()
         price = request.form.get('price', '')
         stock_quantity = request.form.get('stock_quantity', '')
-        image_url = request.form.get('image_url', '').strip()
         category_id = request.form.get('category_id', '')
         is_active = request.form.get('is_active') == 'on'
         
@@ -315,7 +316,6 @@ def edit_product(product_id):
             product.description = description
             product.price = price
             product.stock_quantity = stock_quantity
-            product.image_url = image_url
             product.category_id = category_id
             product.is_active = is_active
             

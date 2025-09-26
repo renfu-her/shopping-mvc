@@ -62,7 +62,6 @@ def init_database():
                             description=product_data['description'],
                             price=product_data['price'],
                             stock_quantity=product_data['stock_quantity'],
-                            image_url=product_data.get('image_url'),
                             category_id=category.id if category else None
                         )
                         db.session.add(product)
